@@ -7,8 +7,8 @@ server:
 # for an active spring profile.
 
 spring:
-    profiles: someOtherSpringProfile
+    profiles: secondInstance
 server:
-    port: 1234
+    port: 9081
 
 ---
