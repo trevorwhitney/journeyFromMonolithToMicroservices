@@ -1,5 +1,7 @@
 package com.example.billing.reocurringPayments;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,8 @@ import java.util.Map;
 public class Controller {
     @Autowired
     private com.example.payments.Gateway paymentGateway;
+
+    private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
     @RequestMapping(value = "/reocurringPayment", method = RequestMethod.POST)
     public ResponseEntity<String> createReocurringPayment(@RequestBody Map<String, Object> data){

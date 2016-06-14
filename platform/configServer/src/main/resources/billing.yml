@@ -1,0 +1,14 @@
+server:
+  port: 8081
+
+---
+
+# This is an example of overriding configuration
+# for an active spring profile.
+
+spring:
+    profiles: someOtherSpringProfile
+server:
+    port: 1234
+
+---

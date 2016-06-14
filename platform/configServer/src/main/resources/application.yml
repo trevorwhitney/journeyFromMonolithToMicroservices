@@ -2,8 +2,26 @@ server:
   port: 8888
 
 spring:
-  cloud:
-    config:
-      server:
-        git:
-          uri: https://github.com/mikegehard/user-management-config-repo
+  profiles:
+    active: native
+
+# The configurations in this file are shared across all applications.
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  # Allow the services to register more quickly in a demo environment.
+  instance:
+    leaseRenewalIntervalInSeconds: 1
+
+# Turns off security that Spring Cloud Services adds
+# when it pulls in Spring Security
+security:
+  basic:
+    enabled: false
+
+# Turn off security of management endpoints
+# for Spring Boot Actuator
+management:
+  security:
+    enabled: false
