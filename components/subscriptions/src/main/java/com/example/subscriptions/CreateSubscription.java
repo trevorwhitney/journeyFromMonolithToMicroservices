@@ -2,26 +2,33 @@ package com.example.subscriptions;
 
 import com.example.billing.BillingRequest;
 import com.example.billing.Client;
-import com.example.billing.Service;
 import com.example.email.SendEmail;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 public class CreateSubscription {
 
-    private final Service billingService;
-    private final SendEmail emailSender;
-    private final SubscriptionRepository subscriptions;
+	private final Client billingClient;
+	private final SendEmail emailSender;
+	private final SubscriptionRepository subscriptions;
 
-    public CreateSubscription(
-            Service billingService,
-            SendEmail emailSender, SubscriptionRepository subscriptions) {
-        this.billingService = billingService;
-        this.emailSender = emailSender;
-        this.subscriptions = subscriptions;
-    }
+	public CreateSubscription(
+			Client billingClient,
+			SendEmail emailSender, SubscriptionRepository subscriptions) {
+		this.billingClient = billingClient;
+		this.emailSender = emailSender;
+		this.subscriptions = subscriptions;
+	}
 
-    public void run(String userId, String packageId) {
-        subscriptions.create(new Subscription(userId, packageId));
-        billingService.billUser(new BillingRequest(userId, 100));
-        emailSender.run("me@example.com", "Subscription Created", "Some email body");
-    }
+	public HttpStatus run(String userId, String packageId, int amount) {
+		subscriptions.create(new Subscription(userId, packageId));
+		ResponseEntity<String> response = billingClient.billUser(new BillingRequest(userId, amount));
+
+		if (response.getStatusCode() == HttpStatus.CREATED) {
+			emailSender.run("me@example.com", "Subscription Created", "Some email body");
+			return HttpStatus.CREATED;
+		} else {
+			return response.getStatusCode();
+		}
+	}
 }

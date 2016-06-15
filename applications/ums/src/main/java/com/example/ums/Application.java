@@ -1,7 +1,6 @@
 package com.example.ums;
 
 import com.example.billing.Client;
-import com.example.billing.Service;
 import com.example.subscriptions.SubscriptionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,14 +10,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.netflix.feign.EnableFeignClients;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableFeignClients(basePackages = {"com.example.billing"})
 @EnableCircuitBreaker
 public class Application implements CommandLineRunner {
     public static void main(String[] args) {
@@ -33,9 +32,6 @@ public class Application implements CommandLineRunner {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    Client billingclient;
-
     @Override
     public void run(String... strings) throws Exception {
         logger.info("********Setting up database********");
@@ -49,8 +45,14 @@ public class Application implements CommandLineRunner {
         return new SubscriptionRepository(datasource);
     }
 
+    @LoadBalanced
     @Bean
-    public Service billingService(){
-        return new Service(billingclient);
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    @Bean
+    public Client client() {
+        return new Client(restTemplate());
     }
 }

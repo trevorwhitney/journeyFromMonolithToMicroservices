@@ -1,6 +1,6 @@
 package com.example.ums.subscriptions;
 
-import com.example.billing.Service;
+import com.example.billing.Client;
 import com.example.email.SendEmail;
 import com.example.subscriptions.CreateSubscription;
 import com.example.subscriptions.Subscription;
@@ -20,25 +20,25 @@ import java.util.Map;
 @RequestMapping("/subscriptions")
 public class Controller {
 
-    @Autowired
-    SubscriptionRepository subscriptions;
+	@Autowired
+	SubscriptionRepository subscriptions;
 
-    @Autowired
-    Service billingService;
+	@Autowired
+	Client billingClient;
 
-    @RequestMapping(method = RequestMethod.GET)
-    public Iterable<Subscription> index() {
-        return subscriptions.all();
-    }
+	@RequestMapping(method = RequestMethod.GET)
+	public Iterable<Subscription> index() {
+		return subscriptions.all();
+	}
 
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<String> create(@RequestBody Map<String, String> params) {
+	@RequestMapping(method = RequestMethod.POST)
+	public ResponseEntity<String> create(@RequestBody Map<String, String> params) {
 
-        SendEmail emailSender = new SendEmail();
+		SendEmail emailSender = new SendEmail();
 
-        new CreateSubscription(billingService, emailSender, subscriptions)
-                .run(params.get("userId"), params.get("packageId"));
+		HttpStatus result = new CreateSubscription(billingClient, emailSender, subscriptions)
+				.run(params.get("userId"), params.get("packageId"), Integer.parseInt(params.get("amount")));
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
+		return new ResponseEntity<>(result);
+	}
 }
