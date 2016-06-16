@@ -1,0 +1,7 @@
+server:
+  port: 3000
+
+zuul:
+  ignoredServices: '*'
+  routes:
+    user-management: /ums/**
