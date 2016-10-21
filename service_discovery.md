@@ -2,6 +2,8 @@
 
 For this chapter, please checkout the `v3` tag: `git checkout v3`.
 
+NOTE: This chapter is included so make the transition to PCF's service discovery service easier.
+
 One of the problems with distributed systems is keeping track of all available running instances of a particular service so other services can communicate with it. As an app scales, it will bring up new nodes or destroy existing nodes.
 
 To solve this problem, we introduce Eureka, a tool from Netflix that allows services to register themselves with a central registrar. Other applications can then ask the central register how to reach a specific service, instead of having to keep and update that configuration in the services themselves.
