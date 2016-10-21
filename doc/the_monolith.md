@@ -6,5 +6,14 @@ The application will now be in it's monolithic state. We have used a component-b
 
 Notice the application, located under `applications/ums` is a simple application. It contains an `Application.java` which configures the Spring Boot application and some Beans, and a single Subscriptions Controller. 
 
-The rest of the applicaiton's functionality comes from it components. The UMS application's `build.gradle` specifies these components as dependecies in it's [`build.gradle`](../applications/ums/build.gradle):
-``````
+The rest of the applicaiton's functionality comes from it components. The UMS application's `build.gradle` specifies the subscriptions, billing, and email components as dependencies in it's [`build.gradle`](../applications/ums/build.gradle):
+```
+dependencies {
+    compile(project(":components/subscriptions"))
+    compile(project(":components/billing"))
+    compile(project(":components/email"))
+    ...
+}
+```
+This makes classes like the `SubscriptionRepository` and `CreateSubscription` available on the class path for the UMS application to use.
+
